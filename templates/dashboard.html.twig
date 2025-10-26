@@ -1,0 +1,202 @@
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% include 'navbar.html.twig' with {'is_logged_in': is_logged_in} %}
+{% if success %}
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">{{ success }}</span>
+    </div>
+{% endif %}
+{% if error %}
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Error!</strong>
+        <span class="block sm:inline">{{ error }}</span>
+    </div>
+{% endif %}
+<div class="flex flex-col min-h-screen">
+    <div class="container mx-auto p-4 pt-16"> {# Added pt-16 to account for fixed navbar #}
+      <div class="flex justify-between items-center mb-6">
+        <h1 class="text-4xl font-bold">Dashboard</h1>
+        <a href="/logout" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded shadow-md transition duration-300">
+          Logout
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h2 class="text-xl font-semibold text-gray-700 mb-2">Total Tickets</h2>
+          <p class="text-4xl font-bold text-blue-600">{{ totalTickets }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h2 class="text-xl font-semibold text-gray-700 mb-2">Open Tickets</h2>
+          <p class="text-4xl font-bold text-green-600">{{ openTickets }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h2 class="text-xl font-semibold text-gray-700 mb-2">In Progress Tickets</h2>
+          <p class="text-4xl font-bold text-amber-600">{{ inProgressTickets }}</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h2 class="text-xl font-semibold text-gray-700 mb-2">Closed Tickets</h2>
+          <p class="text-4xl font-bold text-gray-600">{{ closedTickets }}</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Tickets Status Over Time</h2>
+          <div class="h-80">
+            <canvas id="overTimeChart"></canvas>
+          </div>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h2 class="text-2xl font-semibold text-gray-800 mb-4">Ticket Status Distribution</h2>
+          <div class="h-80">
+            <canvas id="statusDistributionChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">All Tickets</h2>
+        <ul class="divide-y divide-gray-200">
+          {# Placeholder for tickets.map #}
+          <li class="py-4 flex justify-between items-center">
+            <div>
+              <a href="/tickets/1" class="text-lg font-medium text-blue-600 hover:underline">Sample Ticket 1</a>
+              <p class="text-gray-500 text-sm">Status: <span class="text-green-600">open</span></p>
+            </div>
+            <a href="/tickets/1" class="bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 px-3 rounded shadow-md transition duration-300">View Details</a>
+          </li>
+          <li class="py-4 flex justify-between items-center">
+            <div>
+              <a href="/tickets/2" class="text-lg font-medium text-blue-600 hover:underline">Sample Ticket 2</a>
+              <p class="text-gray-500 text-sm">Status: <span class="text-amber-600">in_progress</span></p>
+            </div>
+            <a href="/tickets/2" class="bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 px-3 rounded shadow-md transition duration-300">View Details</a>
+          </li>
+          <li class="py-4 flex justify-between items-center">
+            <div>
+              <a href="/tickets/3" class="text-lg font-medium text-blue-600 hover:underline">Sample Ticket 3</a>
+              <p class="text-gray-500 text-sm">Status: <span class="text-gray-600">closed</span></p>
+            </div>
+            <a href="/tickets/3" class="bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 px-3 rounded shadow-md transition duration-300">View Details</a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    {% include 'footer.html.twig' %}
+</div>
+
+<script>
+  // Sample data - in a real app, this would come from Twig variables passed from PHP
+  const overTimeChartData = {
+    labels: {{ overTimeLabels | json_encode() | raw }},
+    datasets: [
+      {
+        label: 'Open Tickets',
+        backgroundColor: '#22C55E',
+        data: {{ overTimeOpenData | json_encode() | raw }},
+      },
+      {
+        label: 'In Progress Tickets',
+        backgroundColor: '#F59E0B',
+        data: {{ overTimeInProgressData | json_encode() | raw }},
+      },
+    ],
+  };
+
+  const overTimeChartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        labels: {
+          color: '#4B5563',
+        },
+      },
+      tooltip: {
+        backgroundColor: '#333',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: '#666',
+        borderWidth: 1,
+        cornerRadius: 4,
+      },
+    },
+    scales: {
+      x: {
+        stacked: true,
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#6B7280',
+        },
+      },
+      y: {
+        stacked: true,
+        beginAtZero: true,
+        ticks: {
+          precision: 0,
+          color: '#6B7280',
+        },
+        grid: {
+          color: '#E5E7EB',
+        },
+      },
+    },
+  };
+
+  const statusDistributionData = {
+    labels: ['Open', 'In Progress', 'Closed'],
+    datasets: [
+      {
+        backgroundColor: ['#22C55E', '#F59E0B', '#6B7280'],
+        data: {{ statusDistributionData | json_encode() | raw }},
+      },
+    ],
+  };
+
+  const statusDistributionOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: '#4B5563',
+        },
+      },
+      tooltip: {
+        backgroundColor: '#333',
+        titleColor: '#fff',
+        bodyColor: '#fff',
+        borderColor: '#666',
+        borderWidth: 1,
+        cornerRadius: 4,
+      },
+    },
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const overTimeChartCtx = document.getElementById('overTimeChart');
+    if (overTimeChartCtx) {
+        new Chart(overTimeChartCtx, {
+            type: 'bar',
+            data: overTimeChartData,
+            options: overTimeChartOptions,
+        });
+    }
+
+    const statusDistributionCtx = document.getElementById('statusDistributionChart');
+    if (statusDistributionCtx) {
+        new Chart(statusDistributionCtx, {
+            type: 'doughnut',
+            data: statusDistributionData,
+            options: statusDistributionOptions,
+        });
+    }
+  });
+</script>

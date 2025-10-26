@@ -1,0 +1,27 @@
+{# D:\HNG\ticket app\twig-ticket-app\templates\navbar.html.twig #}
+<nav class="bg-[#155DFC] p-4 fixed w-[100vw] top-0 z-30 shadow-lg">
+  <div class="container mx-auto flex items-center justify-between flex-wrap">
+    <div class="flex items-center flex-shrink-0 text-white mr-6">
+      <a href="/" class="font-semibold text-xl tracking-tight">TicketApp</a>
+    </div>
+    <div class="block lg:hidden">
+      {# This button would toggle the menu visibility via client-side JS #}
+      <button id="navbar-toggle" class="flex items-center px-3 py-2 border rounded text-white border-white hover:text-gray-200 hover:border-gray-200">
+        <svg class="fill-current h-3 w-3" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><title>Menu</title><path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"/></svg>
+      </button>
+    </div>
+    {# is_open would be controlled by client-side JavaScript #}
+    <div id="navbar-menu" class="w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block">
+      <div class="text-sm lg:flex-grow lg:flex lg:justify-center lg:space-x-6 mt-4 lg:mt-0">
+        <a href="/" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-200 mr-4">Home</a>
+        <a href="/tickets" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-200 mr-4">Tickets</a>
+        <a href="/dashboard" class="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-gray-200">Dashboard</a>
+      </div>
+      <div class="mt-4 lg:mt-0">
+        {% if is_logged_in %}
+          <a href="/logout" class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-blue-500 hover:bg-white mt-4 lg:mt-0">Logout</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>

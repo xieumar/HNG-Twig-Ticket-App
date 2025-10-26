@@ -1,0 +1,27 @@
+{# D:\HNG\ticket app\twig-ticket-app\templates\ticket_item.html.twig #}
+<div class="bg-white p-4 rounded-lg shadow-md flex justify-between items-center border border-gray-200">
+  <div>
+    <a href="/tickets/{{ ticket.id }}" class="text-xl font-semibold text-blue-600 hover:underline">{{ ticket.title }}</a>
+    <p class="text-gray-700">{{ ticket.description }}</p>
+    <p class="text-gray-500 text-sm">Status:
+      <span class="
+        {% if ticket.status == 'open' %}text-green-600
+        {% elseif ticket.status == 'in_progress' %}text-amber-600
+        {% else %}text-gray-600{% endif %}
+      ">{{ ticket.status }}</span>
+    </p>
+  </div>
+  <div class="flex space-x-2">
+    <button class="bg-blue-500 hover:bg-blue-600 text-white text-sm py-1 px-3 rounded edit-ticket-button"
+            data-ticket-id="{{ ticket.id }}"
+            data-ticket-title="{{ ticket.title }}"
+            data-ticket-description="{{ ticket.description }}"
+            data-ticket-status="{{ ticket.status }}">
+      Update
+    </button>
+    <button class="bg-red-500 hover:bg-red-600 text-white text-sm py-1 px-3 rounded delete-ticket-button"
+            data-ticket-id="{{ ticket.id }}">
+      Delete
+    </button>
+  </div>
+</div>

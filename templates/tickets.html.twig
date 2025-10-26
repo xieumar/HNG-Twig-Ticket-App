@@ -1,0 +1,123 @@
+<script src="https://cdn.tailwindcss.com"></script>
+{% include 'navbar.html.twig' with {'is_logged_in': is_logged_in} %}
+<div class="flex flex-col min-h-screen">
+    <div class="max-w-4xl mx-auto p-4 mt-20">
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800 mb-4">Ticket List</h1>
+        <button id="toggle-ticket-form" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow-md transition duration-300 mt-4">
+          Create New Ticket
+        </button>
+
+        <div id="ticket-form-container" class="hidden">
+            {% include 'ticket_form.html.twig' with {'ticket': null} %} {# Initially for creation #}
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 gap-4">
+        {% if tickets is empty %}
+          <p class="text-gray-600">No tickets found.</p>
+        {% else %}
+          {% for ticket in tickets %}
+            {% include 'ticket_item.html.twig' with {'ticket': ticket} %}
+          {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+    {% include 'footer.html.twig' %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggle-ticket-form');
+    const formContainer = document.getElementById('ticket-form-container');
+    const ticketForm = formContainer.querySelector('form'); // Get the form inside the container
+
+    let isEditing = false; // Track if the form is in editing mode
+
+    toggleButton.addEventListener('click', function() {
+        if (formContainer.classList.contains('hidden')) {
+            // Show form for creation
+            formContainer.classList.remove('hidden');
+            toggleButton.textContent = 'Cancel';
+            isEditing = false;
+            // Reset form fields for creation
+            ticketForm.reset();
+            ticketForm.querySelector('#title').value = '';
+            ticketForm.querySelector('#description').value = '';
+            ticketForm.querySelector('#status').value = 'open';
+            // Remove hidden input for ID if it exists
+            const idInput = ticketForm.querySelector('input[name="id"]');
+            if (idInput) idInput.remove();
+            ticketForm.querySelector('button[type="submit"]').textContent = 'Create Ticket';
+
+        } else {
+            // Hide form
+            formContainer.classList.add('hidden');
+            toggleButton.textContent = 'Create New Ticket';
+            isEditing = false;
+        }
+    });
+
+    // Event delegation for edit buttons
+    document.querySelectorAll('.edit-ticket-button').forEach(button => {
+        button.addEventListener('click', function() {
+            const ticketId = this.dataset.ticketId;
+            const ticketTitle = this.dataset.ticketTitle;
+            const ticketDescription = this.dataset.ticketDescription;
+            const ticketStatus = this.dataset.ticketStatus;
+
+            // Show form for editing
+            formContainer.classList.remove('hidden');
+            toggleButton.textContent = 'Cancel';
+            isEditing = true;
+
+            // Populate form fields
+            ticketForm.querySelector('#title').value = ticketTitle;
+            ticketForm.querySelector('#description').value = ticketDescription;
+            ticketForm.querySelector('#status').value = ticketStatus;
+
+            // Add hidden input for ID
+            let idInput = ticketForm.querySelector('input[name="id"]');
+            if (!idInput) {
+                idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                ticketForm.appendChild(idInput);
+            }
+            idInput.value = ticketId;
+            ticketForm.querySelector('button[type="submit"]').textContent = 'Update Ticket';
+        });
+    });
+
+    // Event delegation for delete buttons
+    document.querySelectorAll('.delete-ticket-button').forEach(button => {
+        button.addEventListener('click', async function(e) {
+            e.preventDefault();
+            const ticketId = this.dataset.ticketId;
+            const result = await showConfirmation(
+                'Delete Ticket',
+                'Are you sure you want to delete this ticket? This action cannot be undone.',
+                'Delete',
+                'Cancel'
+            );
+
+            if (result) {
+                const deleteForm = document.createElement('form');
+                deleteForm.method = 'POST';
+                deleteForm.action = '/tickets/delete';
+
+                const idInput = document.createElement('input');
+                idInput.type = 'hidden';
+                idInput.name = 'id';
+                idInput.value = ticketId;
+                deleteForm.appendChild(idInput);
+
+                document.body.appendChild(deleteForm);
+                deleteForm.submit();
+            } else {
+                showToast('Ticket deletion cancelled.', 'info');
+            }
+        });
+    });
+});
+</script>

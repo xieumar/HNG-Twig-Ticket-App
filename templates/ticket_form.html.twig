@@ -1,0 +1,31 @@
+{# D:\HNG\ticket app\twig-ticket-app\templates\ticket_form.html.twig #}
+<form action="/tickets/submit" method="POST" class="bg-white p-6 rounded-lg shadow-md space-y-4 mt-4">
+  <div>
+    <label for="title" class="block text-gray-700 text-sm font-bold mb-2">Title</label>
+    <input type="text" id="title" name="title" value="{{ ticket.title | default('') }}" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+    {# Client-side validation for title would be added here via JavaScript #}
+    {# errors.title will be handled by server-side logic or client-side JS #}
+  </div>
+  <div>
+    <label for="description" class="block text-gray-700 text-sm font-bold mb-2">Description</label>
+    <textarea id="description" name="description" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">{{ ticket.description | default('') }}</textarea>
+    {# Client-side validation for description would be added here via JavaScript #}
+    {# errors.description will be handled by server-side logic or client-side JS #}
+  </div>
+  <div class="relative">
+    <label for="status" class="block text-gray-700 text-sm font-bold mb-2">Status</label>
+    <select id="status" name="status" class="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline">
+      <option value="open" {% if ticket.status == 'open' %}selected{% endif %}>Open</option>
+      <option value="in_progress" {% if ticket.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+      <option value="closed" {% if ticket.status == 'closed' %}selected{% endif %}>Closed</option>
+    </select>
+    <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 mt-6">
+      <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+    </div>
+    {# Client-side validation for status would be added here via JavaScript #}
+    {# errors.status will be handled by server-side logic or client-side JS #}
+  </div>
+  <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-full">
+    {% if ticket %}Update Ticket{% else %}Create Ticket{% endif %}
+  </button>
+</form>
