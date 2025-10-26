@@ -1,1 +1,26 @@
-[]
+{
+    "1": {
+        "id": "68fe2c6f0749e",
+        "title": "Ticket 2",
+        "description": "This is the second ticket.",
+        "status": "closed"
+    },
+    "2": {
+        "id": "68fe2c6f0749f",
+        "title": "Ticket 3",
+        "description": "This is the third ticket.",
+        "status": "closed"
+    },
+    "3": {
+        "id": "68fe2c6f074a0",
+        "title": "Ticket 4",
+        "description": "This is the fourth ticket.",
+        "status": "open"
+    },
+    "4": {
+        "id": "68fe2c6f074a1",
+        "title": "Ticket 5",
+        "description": "This is the fifth ticket.",
+        "status": "in_progress"
+    }
+}

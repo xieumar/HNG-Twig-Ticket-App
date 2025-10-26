@@ -31,6 +31,7 @@
     </style>
 </head>
 <body>
+    <div class="max-w-[1440px] mx-auto">
     <div id="confirmation-modal" class="modal-overlay hidden">
         <div class="modal-content">
             <h3 id="modal-title" class="text-xl font-bold mb-4"></h3>
@@ -273,7 +274,7 @@ switch ($path) {
             'overTimeInProgressData' => [0, 1, 1],
             'statusDistributionData' => [$openTickets, $inProgressTickets, $closedTickets],
         ];
-        echo $twig->render('dashboard.html.twig', array_merge(['is_logged_in' => $is_logged_in, 'current_user' => $current_user], $flash_messages, $dashboard_data));
+        echo $twig->render('dashboard.html.twig', array_merge(['is_logged_in' => $is_logged_in, 'current_user' => $current_user, 'tickets' => $tickets], $flash_messages, $dashboard_data));
         break;
     case 'auth/login':
         // If already logged in, redirect to dashboard
@@ -290,8 +291,14 @@ switch ($path) {
         echo $twig->render('signup.html.twig', array_merge(['is_logged_in' => $is_logged_in], $flash_messages));
         break;
     case 'logout':
-        session_destroy();
-        redirect('/');
+        // If it's a GET request, show the logout confirmation page
+        if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+            echo $twig->render('logout.html.twig', array_merge(['is_logged_in' => $is_logged_in], $flash_messages));
+        } else if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            // If it's a POST request, perform the actual logout
+            session_destroy();
+            redirect('/');
+        }
         break;
     default:
         // Handle ticket details, assuming /tickets/{id}
@@ -376,7 +383,16 @@ switch ($path) {
                     navbarMenu.classList.toggle('hidden');
                 });
             }
+
+            // Auto-hide flash messages after 3 seconds
+            const flashMessages = document.querySelectorAll('[role="alert"]');
+            flashMessages.forEach(message => {
+                setTimeout(() => {
+                    message.classList.add('hidden');
+                }, 3000);
+            });
         });
     </script>
+    </div> <!-- Closing div for max-w-[1440px] mx-auto -->
 </body>
 </html>

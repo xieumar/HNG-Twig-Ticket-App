@@ -1,7 +1,59 @@
 <script src="https://cdn.tailwindcss.com"></script>
 {% include 'navbar.html.twig' with {'is_logged_in': is_logged_in} %}
-<div class="flex flex-col min-h-screen">
-    <div class="max-w-4xl mx-auto p-4 mt-20">
+<div class="relative overflow-hidden flex flex-col min-h-screen bg-white">
+    <style>
+        .hero-circle {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(173, 216, 230, 0.1); /* Pale blue with transparency */
+          animation: float 15s ease-in-out infinite;
+        }
+      .hero-circle-1 {
+        width: 100px;
+        height: 100px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .hero-circle-2 {
+        width: 150px;
+        height: 150px;
+        top: 70%;
+        left: 80%;
+        animation-delay: 5s;
+      }
+
+      .hero-circle-3 {
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 30%;
+        animation-delay: 10s;
+      }
+
+      .hero-circles-wrapper {
+        transform: translateZ(0);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px) translateX(0px);
+        }
+        50% {
+          transform: translateY(-20px) translateX(20px);
+        }
+        100% {
+          transform: translateY(0px) translateX(0px);
+        }
+      }
+    </style>
+    <div class="absolute inset-0 z-0 hero-circles-wrapper">
+      <div class="hero-circle hero-circle-1"></div>
+      <div class="hero-circle hero-circle-2"></div>
+      <div class="hero-circle hero-circle-3"></div>
+    </div>
+    <div class="relative z-10 max-w-lg mx-auto p-4 mt-20">
       <div class="mb-6">
         <h1 class="text-3xl font-bold text-gray-800 mb-4">Ticket List</h1>
         <button id="toggle-ticket-form" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow-md transition duration-300 mt-4">

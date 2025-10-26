@@ -12,15 +12,67 @@
         <span class="block sm:inline">{{ error }}</span>
     </div>
 {% endif %}
-<div class="flex flex-col min-h-screen items-center justify-center">
-    <div class="max-w-md mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg">
+<div class="relative overflow-hidden flex flex-col min-h-screen items-center justify-center bg-white">
+    <style>
+        .hero-circle {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(173, 216, 230, 0.1); /* Pale blue with transparency */
+          animation: float 15s ease-in-out infinite;
+        }
+      .hero-circle-1 {
+        width: 100px;
+        height: 100px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .hero-circle-2 {
+        width: 150px;
+        height: 150px;
+        top: 70%;
+        left: 80%;
+        animation-delay: 5s;
+      }
+
+      .hero-circle-3 {
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 30%;
+        animation-delay: 10s;
+      }
+
+      .hero-circles-wrapper {
+        transform: translateZ(0);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px) translateX(0px);
+        }
+        50% {
+          transform: translateY(-20px) translateX(20px);
+        }
+        100% {
+          transform: translateY(0px) translateX(0px);
+        }
+      }
+    </style>
+    <div class="absolute inset-0 z-0 hero-circles-wrapper">
+      <div class="hero-circle hero-circle-1"></div>
+      <div class="hero-circle hero-circle-2"></div>
+      <div class="hero-circle hero-circle-3"></div>
+    </div>
+    <div class="relative z-10 max-w-[500px] mx-auto mt-10 p-8 bg-white rounded-lg shadow-lg">
       <form action="/signup" method="POST"> {# action and method added for basic form submission #}
         <h2 class="text-3xl font-bold text-center mb-6">Sign Up</h2>
         <div class="mb-4">
           <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
           <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
           {# Client-side validation for name would be added here via JavaScript #}
-          {# errors.name will be handled by server-side logic or client-side JS #}
+          {% if errors.name %}<p class="text-red-500 text-xs italic mt-2">{{ errors.name }}</p>{% endif %}
         </div>
         <div class="mb-4">
           <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>

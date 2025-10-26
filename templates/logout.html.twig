@@ -12,8 +12,60 @@
         <span class="block sm:inline">{{ error }}</span>
     </div>
 {% endif %}
-<div class="flex flex-col min-h-screen items-center justify-center">
-    <div class="max-w-md mx-auto mt-40 p-8 bg-white rounded-lg shadow-lg text-center">
+<div class="relative overflow-hidden flex flex-col min-h-screen items-center justify-center bg-white">
+    <style>
+        .hero-circle {
+          position: absolute;
+          border-radius: 50%;
+          background: rgba(173, 216, 230, 0.1); /* Pale blue with transparency */
+          animation: float 15s ease-in-out infinite;
+        }
+      .hero-circle-1 {
+        width: 100px;
+        height: 100px;
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .hero-circle-2 {
+        width: 150px;
+        height: 150px;
+        top: 70%;
+        left: 80%;
+        animation-delay: 5s;
+      }
+
+      .hero-circle-3 {
+        width: 80px;
+        height: 80px;
+        top: 50%;
+        left: 30%;
+        animation-delay: 10s;
+      }
+
+      .hero-circles-wrapper {
+        transform: translateZ(0);
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px) translateX(0px);
+        }
+        50% {
+          transform: translateY(-20px) translateX(20px);
+        }
+        100% {
+          transform: translateY(0px) translateX(0px);
+        }
+      }
+    </style>
+    <div class="absolute inset-0 z-0 hero-circles-wrapper">
+      <div class="hero-circle hero-circle-1"></div>
+      <div class="hero-circle hero-circle-2"></div>
+      <div class="hero-circle hero-circle-3"></div>
+    </div>
+    <div class="relative z-10 max-w-md mx-auto mt-40 p-8 bg-white rounded-lg shadow-lg text-center">
       <h2 class="text-3xl font-bold mb-6">It's sad to see you go!</h2>
       <p class="text-gray-600 mb-6">Are you sure you want to log out?</p>
       {# In a real Twig/PHP app, this would trigger a form submission or a link to a logout endpoint #}
